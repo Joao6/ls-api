@@ -41,7 +41,7 @@ public class IdosoController {
         try {
             //TODO: manipular a imagem do idoso
             idoso.setTipo("ido");  
-            idoso.setImagem(ImagemUtils.getImagemFromBase64(idoso.getImagem(), idoso.getCodigo()));
+            //idoso.setImagem(ImagemUtils.getImagemFromBase64(idoso.getImagem(), idoso.getCodigo()));
             idosoService.create(idoso);
             return ResponseEntity.ok(idoso);
         } catch (Exception e) {
