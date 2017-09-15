@@ -36,20 +36,19 @@ public class ImagemUtils {
     public static final String IMAGEM_DEFAULT_USUARIO = "IMG_DEFAULT_USUARIO.png";
 
     public static String writeToFile(String base64, String fileName) {
-        try {
-            String path = new File("webapp/WEB-INF/resources/").getCanonicalPath();
-
+        try {            
             String test = AdministradorController.class.getResource("").getPath();
             int index = test.indexOf("WEB-INF/");
             test = test.substring(0, index + 8);
             test += "resources/";
             test = test.substring(1, test.length());
-            
+            test = test.replace("/", "\\");
+            //test = "D:\\Joao Pedro\\Projetos\\TCC - Life Stories\\ls-api-heroku-git\\ls-api\\target\\ls-api\\WEB-INF\\resources\\";
 
-            /*File diretorio = new File(test);
+            File diretorio = new File(test);
             if (!diretorio.exists()) {
                 diretorio.mkdirs();
-            }*/
+            }
             base64 = base64.split(",")[1];
             byte[] bytes = Base64.getDecoder().decode(new String(base64).getBytes("UTF-8"));
 
