@@ -26,7 +26,8 @@ import static org.springframework.security.core.context.SecurityContextHolder.ge
  */
 public class ImagemUtils {
 
-    public static final String UPLOAD_PATH = System.getProperty("user.home") + "\\LIFE_STORIES\\IMG\\";
+//    public static final String UPLOAD_PATH = System.getProperty("user.home") + "\\LIFE_STORIES\\IMG\\";
+    public static final String UPLOAD_PATH = System.getProperty("user.dir") + "\\IMGLIFESTORIES\\";
 
     public static final String IMAGEM_DEFAULT_NOTICIA = "IMG_DEFAULT_NOTICIA.png";
     public static final String IMAGEM_DEFAULT_PROMOCAO = "IMG_DEFAULT_PROMOCAO.png";
@@ -43,6 +44,7 @@ public class ImagemUtils {
             test += "resources/";
             test = test.substring(1, test.length());
             test = test.replace("/", "\\");
+            test = UPLOAD_PATH;
             //test = "D:\\Joao Pedro\\Projetos\\TCC - Life Stories\\ls-api-heroku-git\\ls-api\\target\\ls-api\\WEB-INF\\resources\\";
 
             File diretorio = new File(test);
