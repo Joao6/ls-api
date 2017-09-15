@@ -7,11 +7,14 @@
  */
 package br.com.lifestories.api.utils;
 
+import br.com.lifestories.api.controllers.AdministradorController;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Base64;
+import javax.servlet.ServletContext;
+import static org.springframework.security.core.context.SecurityContextHolder.getContext;
 
 /**
  * Classe de utilidade direcionadas a facilitar a implementação do Controller de
@@ -34,19 +37,28 @@ public class ImagemUtils {
 
     public static String writeToFile(String base64, String fileName) {
         try {
-            File diretorio = new File(UPLOAD_PATH);
+            String path = new File("webapp/WEB-INF/resources/").getCanonicalPath();
+
+            String test = AdministradorController.class.getResource("").getPath();
+            int index = test.indexOf("WEB-INF/");
+            test = test.substring(0, index + 8);
+            test += "resources/";
+            test = test.substring(1, test.length());
+            
+
+            /*File diretorio = new File(test);
             if (!diretorio.exists()) {
                 diretorio.mkdirs();
-            }
+            }*/
             base64 = base64.split(",")[1];
             byte[] bytes = Base64.getDecoder().decode(new String(base64).getBytes("UTF-8"));
 
-            OutputStream out = new FileOutputStream(new File(UPLOAD_PATH + fileName));
+            OutputStream out = new FileOutputStream(new File(test + fileName));
             out.write(bytes);
 
             out.flush();
             out.close();
-            return UPLOAD_PATH + fileName;
+            return test + fileName;
 
         } catch (IOException e) {
             return "Ocorreu um erro interno: " + e.getMessage();
