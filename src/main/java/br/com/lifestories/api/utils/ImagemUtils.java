@@ -23,7 +23,7 @@ import java.util.Base64;
  */
 public class ImagemUtils {
 
-    public static final String UPLOAD_PATH = System.getProperty("user.home") + "\\Documents\\LIFE_STORIES\\IMG\\";
+    public static final String UPLOAD_PATH = System.getProperty("user.home") + "\\LIFE_STORIES\\IMG\\";
 
     public static final String IMAGEM_DEFAULT_NOTICIA = "IMG_DEFAULT_NOTICIA.png";
     public static final String IMAGEM_DEFAULT_PROMOCAO = "IMG_DEFAULT_PROMOCAO.png";
