@@ -16,11 +16,11 @@ public class ConnectionManager {
 
     private ConnectionManager() {
         dataSource = new PGPoolingDataSource();
-        dataSource.setDataSourceName("lifestories");
-        dataSource.setServerName("localhost");
-        dataSource.setDatabaseName("lifestories");
-        dataSource.setUser("postgres");
-        dataSource.setPassword("postgres");
+        dataSource.setDataSourceName("d4tsgf5l53s0a9");
+        dataSource.setServerName("ec2-107-22-171-11.compute-1.amazonaws.com");
+        dataSource.setDatabaseName("d4tsgf5l53s0a9");
+        dataSource.setUser("szdczoibhjoaqx");
+        dataSource.setPassword("47eb178e294faf8ffe749a48f0e119b84f20a84028c6dff6a639d64bd0831923");
         dataSource.setMaxConnections(30);
         dataSource.setInitialConnections(10);
     }
