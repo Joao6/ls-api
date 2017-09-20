@@ -68,7 +68,7 @@ public class UsuarioController {
                 novoHash = adm.getEmail() + usuario.getSenha();
             }                        
             novoHash = StringUtils.convertStringToMD5(novoHash);            
-            hashUsuario = hashUsuario.substring(0,hashUsuario.length()-1);
+            hashUsuario = hashUsuario.substring(0,32);
             if(novoHash.equals(hashUsuario)){
                 return ResponseEntity.ok(usuarioService.readById(Long.parseLong(idUsuario)));
             }else{
