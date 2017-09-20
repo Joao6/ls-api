@@ -51,7 +51,7 @@ public class UsuarioController {
     @GetMapping(value = "/validar")
     public ResponseEntity validarUsuario(@RequestParam(value = "hashUsuario", required = true) String hashUsuario) throws Exception {
         try {
-            String idUsuario = hashUsuario.substring(hashUsuario.length() -1, hashUsuario.length());
+            String idUsuario = hashUsuario.substring(32, hashUsuario.length());
             Usuario usuario = usuarioService.readById(Long.parseLong(idUsuario));
             String novoHash = "";
             if (usuario.getTipo().equals("ido")) {
