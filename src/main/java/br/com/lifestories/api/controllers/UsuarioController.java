@@ -66,14 +66,14 @@ public class UsuarioController {
             } else if (usuario.getTipo().equals("adm")) {
                 Administrador adm = admService.readById(Long.parseLong(idUsuario));
                 novoHash = adm.getEmail() + usuario.getSenha();
-            }                        
-            novoHash = StringUtils.convertStringToMD5(novoHash);            
-            hashUsuario = hashUsuario.substring(0,32);
-            if(novoHash.equals(hashUsuario)){
+            }
+            novoHash = StringUtils.convertStringToMD5(novoHash);
+            hashUsuario = hashUsuario.substring(0, 32);
+            if (novoHash.equals(hashUsuario)) {
                 return ResponseEntity.ok(usuarioService.readById(Long.parseLong(idUsuario)));
-            }else{
+            } else {
                 return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Este hash não é equivalente ao usuário informado");
-            }            
+            }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
@@ -82,45 +82,48 @@ public class UsuarioController {
     @GetMapping(value = "/login")
     public ResponseEntity validarLogin(
             @RequestParam(value = "identificador", required = true) String identificador,
-            @RequestParam(value = "senha", required = true) String senha
+            @RequestParam(value = "senha", required = true) String senha,
+            @RequestParam(value = "tipoUsuario", required = true) String tipoUsuario
     ) throws Exception {
 
         try {
             Map<Long, Object> criteria = new HashMap<>();
-
-            criteria.clear();
-            criteria.put(UsuarioCriteria.ADM_TYPE, true);
-            List<Administrador> admList = admService.readByCriteria(criteria, null, null);
-            for (Administrador adm : admList) {
-                if (adm.getEmail().equals(identificador) && adm.getSenha().equals(senha)) {
-                    return ResponseEntity.ok(adm);
+            if (tipoUsuario.equals("estudante")) {
+                criteria.put(UsuarioCriteria.EST_TYPE, true);
+                List<Estudante> estList = estService.readByCriteria(criteria, null, null);
+                for (Estudante est : estList) {
+                    if (est.getEmail().equals(identificador) && est.getSenha().equals(senha)) {
+                        return ResponseEntity.ok(est);
+                    }
                 }
-            }
-
-            criteria.clear();
-            criteria.put(UsuarioCriteria.EST_TYPE, true);
-            List<Estudante> estList = estService.readByCriteria(criteria, null, null);
-            for (Estudante est : estList) {
-                if (est.getEmail().equals(identificador) && est.getSenha().equals(senha)) {
-                    return ResponseEntity.ok(est);
+            } else if (tipoUsuario.equals("idoso")) {
+                criteria.put(UsuarioCriteria.IDO_TYPE, true);
+                List<Idoso> idoList = idoService.readByCriteria(criteria, null, null);
+                for (Idoso ido : idoList) {
+                    if (ido.getCodigo().equals(identificador) && ido.getSenha().equals(senha)) {
+                        return ResponseEntity.ok(ido);
+                    }
                 }
-            }
-
-            criteria.clear();
-            criteria.put(UsuarioCriteria.IDO_TYPE, true);
-            List<Idoso> idoList = idoService.readByCriteria(criteria, null, null);
-            for (Idoso ido : idoList) {
-                if (ido.getCodigo().equals(identificador) && ido.getSenha().equals(senha)) {
-                    return ResponseEntity.ok(ido);
+            } else if (tipoUsuario.equals("instituicao")) {
+                criteria.put(UsuarioCriteria.INS_TYPE, true);
+                List<InstituicaoLongaPermanencia> insList = insService.readByCriteria(criteria, null, null);
+                for (InstituicaoLongaPermanencia ins : insList) {
+                    if (ins.getEmail().equals(identificador) && ins.getSenha().equals(senha)) {
+                        if (ins.getTipo().equals("ains")) {
+                            return ResponseEntity.status(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS).body("Esta instituição ainda não foi aprovada por um administrador.");
+                        } else {
+                            return ResponseEntity.ok(ins);
+                        }
+                    }
                 }
-            }
 
-            criteria.clear();
-            criteria.put(UsuarioCriteria.INS_TYPE, true);
-            List<InstituicaoLongaPermanencia> insList = insService.readByCriteria(criteria, null, null);
-            for (InstituicaoLongaPermanencia ins : insList) {
-                if (ins.getEmail().equals(identificador) && ins.getSenha().equals(senha)) {
-                    return ResponseEntity.ok(ins);
+                criteria.clear();
+                criteria.put(UsuarioCriteria.ADM_TYPE, true);
+                List<Administrador> admList = admService.readByCriteria(criteria, null, null);
+                for (Administrador adm : admList) {
+                    if (adm.getEmail().equals(identificador) && adm.getSenha().equals(senha)) {
+                        return ResponseEntity.ok(adm);
+                    }
                 }
             }
             return ResponseEntity.ok(null);
