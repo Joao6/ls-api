@@ -60,7 +60,7 @@ public class InstituicaoController {
     @PostMapping()
     public ResponseEntity create(@RequestBody InstituicaoLongaPermanencia instituicao) throws Exception {
         try {       
-            instituicao.setTipo("ins");
+            instituicao.setTipo("ains");
             instituicaoService.create(instituicao);
             return ResponseEntity.ok(instituicao);
         } catch (Exception e) {

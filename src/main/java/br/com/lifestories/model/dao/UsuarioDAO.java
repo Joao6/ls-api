@@ -206,7 +206,7 @@ public class UsuarioDAO implements BaseDAO<Usuario> {
         Boolean instituicao = (Boolean) criteria.get(UsuarioCriteria.INS_TYPE);
         if (instituicao != null) {
             if (instituicao) {
-                sql += " and usu_tipo = 'ins'";
+                sql += " and usu_tipo ILIKE '%ins%'";
             } 
         }
         
