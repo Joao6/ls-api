@@ -221,6 +221,11 @@ public class UsuarioDAO implements BaseDAO<Usuario> {
         if(idosoInstituicao != null && idosoInstituicao > 0){
             sql += " and idoso.ido_instituicao_longa_permanencia_fk = " + idosoInstituicao;
         }
+        
+        String nomeUsuario = (String) criteria.get(UsuarioCriteria.NOME_USUARIO);
+        if(nomeUsuario != null && !nomeUsuario.isEmpty()){
+            sql += " and usu_nome ILIKE '%" + nomeUsuario +"%'";
+        }
 
         return sql;
     }

@@ -49,7 +49,7 @@ public class InstituicaoController {
             Map<Long, Object> criteria = new HashMap<>();
             criteria.put(UsuarioCriteria.INS_TYPE, true);
             if (nome != null && !nome.isEmpty()) {
-                //add name
+                criteria.put(UsuarioCriteria.NOME_USUARIO, nome);
             }
             return ResponseEntity.ok(instituicaoService.readByCriteria(criteria, 10L, offset));
         } catch (Exception e) {
