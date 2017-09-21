@@ -231,6 +231,16 @@ public class UsuarioDAO implements BaseDAO<Usuario> {
         if(statusInstituicao != null && !statusInstituicao.isEmpty()){
             sql += " and usu_tipo = '" + statusInstituicao +"'";
         }
+        
+        String emailInstituicao = (String) criteria.get(UsuarioCriteria.INSTITUICAO_EMAIL);
+        if(emailInstituicao != null && !emailInstituicao.isEmpty()){
+            sql += " and ins_email = "+ emailInstituicao;
+        }
+        
+        String emailEstudante = (String) criteria.get(UsuarioCriteria.ESTUDANTE_EMAIL);
+        if(emailEstudante != null && !emailEstudante.isEmpty()){
+            sql += " and est_email = "+ emailEstudante;
+        }
 
         return sql;
     }

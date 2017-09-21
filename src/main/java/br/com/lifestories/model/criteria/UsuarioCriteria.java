@@ -17,4 +17,6 @@ public class UsuarioCriteria {
     public static Long IDOSO_INSTITUICAO = 5L;
     public static Long NOME_USUARIO = 6L;
     public static Long INSTITUICAO_STATUS = 7L;
+    public static Long INSTITUICAO_EMAIL = 8L;
+    public static Long ESTUDANTE_EMAIL = 9L;
 }
