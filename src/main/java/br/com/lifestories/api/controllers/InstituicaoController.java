@@ -43,6 +43,7 @@ public class InstituicaoController {
     @GetMapping()
     public ResponseEntity readByCriteria(
             @RequestParam(value = "nome", required = false) String nome,
+            @RequestParam(value = "status", required = false) String status,
             @RequestParam(value = "offset", required = false) Long offset
     ) throws Exception {
         try {
@@ -50,6 +51,9 @@ public class InstituicaoController {
             criteria.put(UsuarioCriteria.INS_TYPE, true);
             if (nome != null && !nome.isEmpty()) {
                 criteria.put(UsuarioCriteria.NOME_USUARIO, nome);
+            }
+            if (status != null && !status.isEmpty()) {
+                criteria.put(UsuarioCriteria.INSTITUICAO_STATUS, status);
             }
             return ResponseEntity.ok(instituicaoService.readByCriteria(criteria, 10L, offset));
         } catch (Exception e) {
