@@ -38,6 +38,7 @@ public class IdosoController {
         try {
             Map<Long, Object> criteria = new HashMap<>();
             criteria.put(UsuarioCriteria.IDOSO_INSTITUICAO, id);
+            criteria.put(UsuarioCriteria.IDO_TYPE, true);
             if(nome != null && !nome.isEmpty()){
                 criteria.put(UsuarioCriteria.NOME_USUARIO, nome);
             }
