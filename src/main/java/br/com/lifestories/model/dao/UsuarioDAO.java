@@ -89,7 +89,7 @@ public class UsuarioDAO implements BaseDAO<Usuario> {
 
                 EstudanteDAO dao = new EstudanteDAO();
                 dao.readById(conn, (Estudante)entity);
-            } else if (rs.getString("usu_tipo").equals("ins")) {
+            } else if (rs.getString("usu_tipo").contains("ins")) {
                 entity = new InstituicaoLongaPermanencia();
                 entity.setId(id);
                 entity.setNome(rs.getString("usu_nome"));
@@ -156,7 +156,7 @@ public class UsuarioDAO implements BaseDAO<Usuario> {
 
                 EstudanteDAO dao = new EstudanteDAO();
                 dao.readById(conn, (Estudante)entity);
-            } else if (rs.getString("usu_tipo").equals("ins")) {
+            } else if (rs.getString("usu_tipo").contains("ins")) {
                 entity = new InstituicaoLongaPermanencia();
                 entity.setId(rs.getLong("usu_id"));
                 entity.setNome(rs.getString("usu_nome"));
