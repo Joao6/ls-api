@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -26,10 +27,17 @@ public class IdosoController {
     IdosoService idosoService = new IdosoService();
     
     @GetMapping
-    public ResponseEntity readByCriteria(@PathVariable Long id, Long limit, Long offset) throws Exception{
+    public ResponseEntity readByCriteria(@PathVariable Long id, 
+            @RequestParam(value = "limit", required = false) Long limit,
+            @RequestParam(value = "limit", required = false) Long offset,
+            @RequestParam(value = "nome", required = false) String nome
+    ) throws Exception{
         try {
             Map<Long, Object> criteria = new HashMap<>();
             criteria.put(UsuarioCriteria.IDOSO_INSTITUICAO, id);
+            if(nome != null && !nome.isEmpty()){
+                criteria.put(UsuarioCriteria.NOME_USUARIO, nome);
+            }
             return ResponseEntity.ok(idosoService.readByCriteria(criteria, limit, offset));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
@@ -38,10 +46,8 @@ public class IdosoController {
     
     @PostMapping
     public ResponseEntity create(@RequestBody Idoso idoso){
-        try {
-            //TODO: manipular a imagem do idoso
+        try {            
             idoso.setTipo("ido");  
-//            idoso.setImagem(ImagemUtils.getImagemFromBase64(idoso.getImagem(), idoso.getCodigo()));
             idosoService.create(idoso);
             return ResponseEntity.ok(idoso);
         } catch (Exception e) {
