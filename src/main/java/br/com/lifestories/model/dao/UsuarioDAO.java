@@ -31,13 +31,13 @@ public class UsuarioDAO implements BaseDAO<Usuario> {
         ps.setString(++i, entity.getSenha());
         ps.setString(++i, entity.getTipo());
         ResultSet rs = ps.executeQuery();
-        
+
         if (rs.next()) {
             entity.setId(rs.getLong("usu_id"));
         }
         rs.close();
         ps.close();
-        
+
         if (entity instanceof Estudante) {
             EstudanteDAO dao = new EstudanteDAO();
             dao.create(conn, (Estudante) entity);
@@ -64,11 +64,11 @@ public class UsuarioDAO implements BaseDAO<Usuario> {
         PreparedStatement ps = conn.prepareStatement(sql);
         int i = 0;
         ps.setLong(++i, id);
-                
+
         ResultSet rs = ps.executeQuery();
 
         Usuario entity = null;
-        
+
         if (rs.next()) {
 
             if (rs.getString("usu_tipo").equals("ido")) {
@@ -79,7 +79,7 @@ public class UsuarioDAO implements BaseDAO<Usuario> {
                 entity.setTipo(rs.getString("usu_tipo"));
 
                 IdosoDAO dao = new IdosoDAO();
-                dao.readById(conn, (Idoso)entity);
+                dao.readById(conn, (Idoso) entity);
             } else if (rs.getString("usu_tipo").equals("est")) {
                 entity = new Estudante();
                 entity.setId(id);
@@ -88,7 +88,7 @@ public class UsuarioDAO implements BaseDAO<Usuario> {
                 entity.setTipo(rs.getString("usu_tipo"));
 
                 EstudanteDAO dao = new EstudanteDAO();
-                dao.readById(conn, (Estudante)entity);
+                dao.readById(conn, (Estudante) entity);
             } else if (rs.getString("usu_tipo").contains("ins")) {
                 entity = new InstituicaoLongaPermanencia();
                 entity.setId(id);
@@ -97,7 +97,7 @@ public class UsuarioDAO implements BaseDAO<Usuario> {
                 entity.setTipo(rs.getString("usu_tipo"));
 
                 InstituicaoLongaPermanenciaDAO dao = new InstituicaoLongaPermanenciaDAO();
-                dao.readById(conn, (InstituicaoLongaPermanencia)entity);
+                dao.readById(conn, (InstituicaoLongaPermanencia) entity);
             } else if (rs.getString("usu_tipo").equals("adm")) {
                 entity = new Administrador();
                 entity.setId(id);
@@ -106,10 +106,10 @@ public class UsuarioDAO implements BaseDAO<Usuario> {
                 entity.setTipo(rs.getString("usu_tipo"));
 
                 AdministradorDAO dao = new AdministradorDAO();
-                dao.readById(conn, (Administrador)entity);
+                dao.readById(conn, (Administrador) entity);
             }
         }
-        
+
         rs.close();
         ps.close();
 
@@ -119,10 +119,10 @@ public class UsuarioDAO implements BaseDAO<Usuario> {
     @Override
     public List<Usuario> readByCriteria(Connection conn, Map<Long, Object> criteria, Long limit, Long offset) throws Exception { //Pedro
         List<Usuario> usuarioList = new ArrayList<>();
-        String sql = "SELECT * FROM usuario \n" +
-                     "LEFT JOIN instituicao_longa_permanencia instituicao ON instituicao.ins_usuario_fk = usuario.usu_id\n" +
-                     "LEFT JOIN idoso ON idoso.ido_usuario_fk = usuario.usu_id\n" +
-                     "LEFT JOIN estudante ON estudante.est_usuario_fk = usuario.usu_id WHERE 1=1 ";
+        String sql = "SELECT * FROM usuario \n"
+                + "LEFT JOIN instituicao_longa_permanencia instituicao ON instituicao.ins_usuario_fk = usuario.usu_id\n"
+                + "LEFT JOIN idoso ON idoso.ido_usuario_fk = usuario.usu_id\n"
+                + "LEFT JOIN estudante ON estudante.est_usuario_fk = usuario.usu_id WHERE 1=1 ";
         sql += this.applyCriteria(criteria);
 
         if (limit != null && limit > 0) {
@@ -146,7 +146,7 @@ public class UsuarioDAO implements BaseDAO<Usuario> {
                 entity.setTipo(rs.getString("usu_tipo"));
 
                 IdosoDAO dao = new IdosoDAO();
-                dao.readById(conn, (Idoso)entity);
+                dao.readById(conn, (Idoso) entity);
             } else if (rs.getString("usu_tipo").equals("est")) {
                 entity = new Estudante();
                 entity.setId(rs.getLong("usu_id"));
@@ -155,7 +155,7 @@ public class UsuarioDAO implements BaseDAO<Usuario> {
                 entity.setTipo(rs.getString("usu_tipo"));
 
                 EstudanteDAO dao = new EstudanteDAO();
-                dao.readById(conn, (Estudante)entity);
+                dao.readById(conn, (Estudante) entity);
             } else if (rs.getString("usu_tipo").contains("ins")) {
                 entity = new InstituicaoLongaPermanencia();
                 entity.setId(rs.getLong("usu_id"));
@@ -164,7 +164,7 @@ public class UsuarioDAO implements BaseDAO<Usuario> {
                 entity.setTipo(rs.getString("usu_tipo"));
 
                 InstituicaoLongaPermanenciaDAO dao = new InstituicaoLongaPermanenciaDAO();
-                dao.readById(conn, (InstituicaoLongaPermanencia)entity);
+                dao.readById(conn, (InstituicaoLongaPermanencia) entity);
             } else if (rs.getString("usu_tipo").equals("adm")) {
                 entity = new Administrador();
                 entity.setId(rs.getLong("usu_id"));
@@ -173,12 +173,12 @@ public class UsuarioDAO implements BaseDAO<Usuario> {
                 entity.setTipo(rs.getString("usu_tipo"));
 
                 AdministradorDAO dao = new AdministradorDAO();
-                dao.readById(conn, (Administrador)entity);
+                dao.readById(conn, (Administrador) entity);
             }
 
             usuarioList.add(entity);
         }
-        
+
         rs.close();
         s.close();
 
@@ -188,58 +188,58 @@ public class UsuarioDAO implements BaseDAO<Usuario> {
     @Override
     public String applyCriteria(Map<Long, Object> criteria) throws Exception { //Pedro
         String sql = " ";
-        
+
         Boolean administrador = (Boolean) criteria.get(UsuarioCriteria.ADM_TYPE);
         if (administrador != null) {
             if (administrador) {
                 sql += " and usu_tipo = 'adm'";
-            } 
+            }
         }
 
         Boolean idoso = (Boolean) criteria.get(UsuarioCriteria.IDO_TYPE);
         if (idoso != null) {
             if (idoso) {
                 sql += " and usu_tipo = 'ido'";
-            } 
+            }
         }
-        
+
         Boolean instituicao = (Boolean) criteria.get(UsuarioCriteria.INS_TYPE);
         if (instituicao != null) {
             if (instituicao) {
                 sql += " and usu_tipo ILIKE '%ins%'";
-            } 
+            }
         }
-        
+
         Boolean estudante = (Boolean) criteria.get(UsuarioCriteria.EST_TYPE);
         if (estudante != null) {
             if (estudante) {
                 sql += " and usu_tipo = 'est'";
-            } 
+            }
         }
-        
+
         Long idosoInstituicao = (Long) criteria.get(UsuarioCriteria.IDOSO_INSTITUICAO);
-        if(idosoInstituicao != null && idosoInstituicao > 0){
+        if (idosoInstituicao != null && idosoInstituicao > 0) {
             sql += " and idoso.ido_instituicao_longa_permanencia_fk = " + idosoInstituicao;
         }
-        
+
         String nomeUsuario = (String) criteria.get(UsuarioCriteria.NOME_USUARIO);
-        if(nomeUsuario != null && !nomeUsuario.isEmpty()){
-            sql += " and usu_nome ILIKE '%" + nomeUsuario +"%'";
+        if (nomeUsuario != null && !nomeUsuario.isEmpty()) {
+            sql += " and usu_nome ILIKE '%" + nomeUsuario + "%'";
         }
-        
+
         String statusInstituicao = (String) criteria.get(UsuarioCriteria.INSTITUICAO_STATUS);
-        if(statusInstituicao != null && !statusInstituicao.isEmpty()){
-            sql += " and usu_tipo = '" + statusInstituicao +"'";
+        if (statusInstituicao != null && !statusInstituicao.isEmpty()) {
+            sql += " and usu_tipo = '" + statusInstituicao + "'";
         }
-        
+
         String emailInstituicao = (String) criteria.get(UsuarioCriteria.INSTITUICAO_EMAIL);
-        if(emailInstituicao != null && !emailInstituicao.isEmpty()){
-            sql += " and ins_email = '"+ emailInstituicao+"'";
+        if (emailInstituicao != null && !emailInstituicao.isEmpty()) {
+            sql += " and ins_email = '" + emailInstituicao + "'";
         }
-        
+
         String emailEstudante = (String) criteria.get(UsuarioCriteria.ESTUDANTE_EMAIL);
-        if(emailEstudante != null && !emailEstudante.isEmpty()){
-            sql += " and est_email = '"+ emailEstudante + "'";
+        if (emailEstudante != null && !emailEstudante.isEmpty()) {
+            sql += " and est_email = '" + emailEstudante + "'";
         }
 
         return sql;
@@ -247,7 +247,12 @@ public class UsuarioDAO implements BaseDAO<Usuario> {
 
     @Override
     public Long countByCriteria(Connection conn, Map<Long, Object> criteria) throws Exception { //Pedro
-        String sql = "SELECT COUNT(*) count FROM usuario WHERE 1=1";
+        String sql = "SELECT COUNT(*) count FROM usuario \n"
+                + "LEFT JOIN idoso ON usu_id = ido_usuario_fk \n"
+                + "LEFT JOIN instituicao_longa_permanencia ON usu_id = ins_usuario_fk \n"
+                + "LEFT JOIN estudante ON usu_id = est_usuario_fk \n"
+                + "LEFT JOIN administrador ON usu_id = adm_usuario_fk \n"
+                + "WHERE 1=1";
         sql += this.applyCriteria(criteria);
 
         Statement s = conn.createStatement();
@@ -255,12 +260,12 @@ public class UsuarioDAO implements BaseDAO<Usuario> {
 
         Long count = null;
         while (rs.next()) {
-           count = rs.getLong("count");
+            count = rs.getLong("count");
         }
-        
+
         rs.close();
         s.close();
-        
+
         return count;
     }
 
