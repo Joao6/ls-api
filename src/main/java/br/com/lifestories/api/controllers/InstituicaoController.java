@@ -1,5 +1,6 @@
 package br.com.lifestories.api.controllers;
 
+import br.com.lifestories.api.constraints.DefaultConstraints;
 import br.com.lifestories.api.utils.PaginaDTO;
 import br.com.lifestories.model.criteria.UsuarioCriteria;
 import br.com.lifestories.model.entity.InstituicaoLongaPermanencia;
@@ -46,6 +47,7 @@ public class InstituicaoController {
     public ResponseEntity readByCriteria(
             @RequestParam(value = "nome", required = false) String nome,
             @RequestParam(value = "status", required = false) String status,
+            @RequestParam(value = "limit", required = false) Long limit,
             @RequestParam(value = "offset", required = false) Long offset
     ) throws Exception {
         try {
@@ -56,11 +58,14 @@ public class InstituicaoController {
             }
             if (status != null && !status.isEmpty()) {
                 criteria.put(UsuarioCriteria.INSTITUICAO_STATUS, status);
+            }            
+            if(limit == null || limit < 0){
+                limit = DefaultConstraints.LIMIT_DEFAULT;
             }
             
             Long count = instituicaoService.countByCriteria(criteria);
             PaginaDTO<InstituicaoLongaPermanencia> instituicaoPagina = 
-                    new PaginaDTO<>(instituicaoService.readByCriteria(criteria, 10L, offset), count);
+                    new PaginaDTO<>(instituicaoService.readByCriteria(criteria, limit, offset), count);
             return ResponseEntity.ok(instituicaoPagina);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
