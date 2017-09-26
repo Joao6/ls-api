@@ -5,6 +5,8 @@
  */
 package br.com.lifestories.api.controllers;
 
+import br.com.lifestories.api.constraints.DefaultConstraints;
+import br.com.lifestories.api.utils.PaginaDTO;
 import br.com.lifestories.model.criteria.UsuarioCriteria;
 import br.com.lifestories.model.entity.Estudante;
 import br.com.lifestories.model.service.EstudanteService;
@@ -43,26 +45,35 @@ public class EstudanteController {
         }
     }
 
-    @GetMapping()
+    @GetMapping
     public ResponseEntity readByCriteria(
             @RequestParam(value = "nome", required = false) String nome,
-            @RequestParam(value = "offset", required = false) Long offset
+            @RequestParam(value = "offset", required = false) Long offset,
+            @RequestParam(value = "limit", required = false) Long limit
     ) throws Exception {
         try {
             Map<Long, Object> criteria = new HashMap<>();
             criteria.put(UsuarioCriteria.EST_TYPE, true);
             if (nome != null && !nome.isEmpty()) {
-                //add name
+                criteria.put(UsuarioCriteria.NOME_USUARIO, nome);
             }
-            return ResponseEntity.ok(es.readByCriteria(criteria, 10L, offset));
+            if(limit == null || limit < 0){
+                limit = DefaultConstraints.LIMIT_DEFAULT;
+            }
+            Long count = es.countByCriteria(criteria);
+            PaginaDTO<Estudante> estudantePagina = new PaginaDTO<>(es.readByCriteria(criteria, limit, offset), count);
+            return ResponseEntity.ok(estudantePagina);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity create(@RequestBody Estudante estudante) throws Exception {
         try {    
+            if(estudante.getImagem() == null || estudante.getImagem().isEmpty()){
+                estudante.setImagem("https://i.imgur.com/9RAAfJ5.png");
+            }
             estudante.setTipo("est");
             es.create(estudante);
             return ResponseEntity.ok(estudante);
@@ -71,7 +82,7 @@ public class EstudanteController {
         }
     }
     
-    @PutMapping()
+    @PutMapping
     public ResponseEntity update (@RequestBody Estudante estudante) throws Exception{
         try {
             es.update(estudante);

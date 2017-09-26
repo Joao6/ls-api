@@ -2,7 +2,7 @@ package br.com.lifestories.api.controllers;
 
 /**
  *
- * @author NPDI-03
+ * @author Joao
  */
 public class AdministradorController {
     

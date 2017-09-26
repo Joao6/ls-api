@@ -1,11 +1,14 @@
 package br.com.lifestories.api.controllers;
 
+import br.com.lifestories.api.constraints.DefaultConstraints;
+import br.com.lifestories.api.utils.PaginaDTO;
 import br.com.lifestories.model.criteria.UsuarioCriteria;
 import br.com.lifestories.model.entity.InstituicaoLongaPermanencia;
 import br.com.lifestories.model.service.IdosoService;
 import br.com.lifestories.model.service.InstituicaoLongaPermanenciaService;
 import io.swagger.annotations.Api;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +47,7 @@ public class InstituicaoController {
     public ResponseEntity readByCriteria(
             @RequestParam(value = "nome", required = false) String nome,
             @RequestParam(value = "status", required = false) String status,
+            @RequestParam(value = "limit", required = false) Long limit,
             @RequestParam(value = "offset", required = false) Long offset
     ) throws Exception {
         try {
@@ -54,8 +58,15 @@ public class InstituicaoController {
             }
             if (status != null && !status.isEmpty()) {
                 criteria.put(UsuarioCriteria.INSTITUICAO_STATUS, status);
+            }            
+            if(limit == null || limit < 0){
+                limit = DefaultConstraints.LIMIT_DEFAULT;
             }
-            return ResponseEntity.ok(instituicaoService.readByCriteria(criteria, 10L, offset));
+            
+            Long count = instituicaoService.countByCriteria(criteria);
+            PaginaDTO<InstituicaoLongaPermanencia> instituicaoPagina = 
+                    new PaginaDTO<>(instituicaoService.readByCriteria(criteria, limit, offset), count);
+            return ResponseEntity.ok(instituicaoPagina);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
