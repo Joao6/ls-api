@@ -124,6 +124,8 @@ public class UsuarioDAO implements BaseDAO<Usuario> {
                 + "LEFT JOIN idoso ON idoso.ido_usuario_fk = usuario.usu_id\n"
                 + "LEFT JOIN estudante ON estudante.est_usuario_fk = usuario.usu_id WHERE 1=1 ";
         sql += this.applyCriteria(criteria);
+        
+        sql += " ORDER BY usu_nome ASC";
 
         if (limit != null && limit > 0) {
             sql += " limit " + limit;
