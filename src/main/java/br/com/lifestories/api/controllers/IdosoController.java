@@ -59,7 +59,10 @@ public class IdosoController {
     
     @PostMapping
     public ResponseEntity create(@RequestBody Idoso idoso){
-        try {            
+        try {     
+            if(idoso.getImagem() == null || idoso.getImagem().isEmpty()){
+                idoso.setImagem("https://i.imgur.com/9RAAfJ5.png");
+            }
             idoso.setTipo("ido");  
             idosoService.create(idoso);
             return ResponseEntity.ok(idoso);

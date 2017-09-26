@@ -71,6 +71,9 @@ public class EstudanteController {
     @PostMapping
     public ResponseEntity create(@RequestBody Estudante estudante) throws Exception {
         try {    
+            if(estudante.getImagem() == null || estudante.getImagem().isEmpty()){
+                estudante.setImagem("https://i.imgur.com/9RAAfJ5.png");
+            }
             estudante.setTipo("est");
             es.create(estudante);
             return ResponseEntity.ok(estudante);
