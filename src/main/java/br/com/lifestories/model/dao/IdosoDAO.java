@@ -1,6 +1,7 @@
 package br.com.lifestories.model.dao;
 
 import br.com.lifestories.model.entity.Idoso;
+import br.com.lifestories.model.entity.Lingua;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -26,6 +27,7 @@ public class IdosoDAO {
         ps.setLong(++i, entity.getInstituicao().getId());
         ps.execute();
         ps.close();
+        this.updateLinguaList(conn, entity);
     }
 
     public void update(Connection conn, Idoso entity) throws Exception {
@@ -42,6 +44,7 @@ public class IdosoDAO {
         ps.setLong(++i, entity.getId());
         ps.execute();
         ps.close();
+        this.updateLinguaList(conn, entity);
     }
 
     public void readById(Connection conn, Idoso entity) throws Exception {
@@ -63,8 +66,42 @@ public class IdosoDAO {
             entity.getInstituicao().getLocalizacao().setLongitude(rs.getBigDecimal("loc_longitude"));
         }
 
+        sql = "SELECT lingua.* FROM idoso LEFT JOIN conhece ON con_idoso_fk = ido_usuario_fk LEFT JOIN lingua ON con_lingua_fk = lin_id WHERE ido_usuario_fk = ?";
+        i = 0;
+        ps = conn.prepareStatement(sql);
+        ps.setLong(++i, entity.getId());
+        rs = ps.executeQuery();
+
+        while (rs.next()) {
+            if (rs.getLong("lin_id") > 0) {
+                Lingua lingua = new Lingua();
+                lingua.setId(rs.getLong("lin_id"));
+                lingua.setNome(rs.getString("lin_nome"));
+                entity.getLinguaList().add(lingua);
+            }
+        }
+
         rs.close();
         ps.close();
 
+    }
+
+    private void updateLinguaList(Connection conn, Idoso entity) throws Exception {
+        String sql = "DELETE FROM conhece WHERE con_idoso_fk=?;";
+        PreparedStatement ps = conn.prepareStatement(sql);
+        int i = 0;
+        ps.setLong(++i, entity.getId());
+        ps.execute();
+        ps.close();
+
+        sql = "INSERT INTO conhece(con_idoso_fk, con_lingua_fk) VALUES (?, ?);";
+        ps = conn.prepareStatement(sql);
+        for (Lingua lingua : entity.getLinguaList()) {
+            i = 0;
+            ps.setLong(++i, entity.getId());
+            ps.setLong(++i, lingua.getId());
+            ps.execute();
+        }
+        ps.close();
     }
 }

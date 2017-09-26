@@ -21,7 +21,10 @@ public class TesteUsuarios {
 
     public static void main(String[] args) throws Exception {
         TesteUsuarios teste = new TesteUsuarios();
-        teste.createUsuarios();
+        //teste.createUsuarios();
+        //teste.readUsuarioById(7L, 5L, 2L, 1L);
+        Map<Long, Object> criteria = new HashMap<>();
+        teste.readUsuarioByCriteria(criteria, null, null);
     }
 
     private void createUsuarios() throws Exception {
