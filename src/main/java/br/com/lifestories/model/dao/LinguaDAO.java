@@ -1,6 +1,7 @@
 package br.com.lifestories.model.dao;
 
 import br.com.lifestories.model.base.BaseDAO;
+import br.com.lifestories.model.criteria.LinguaCriteria;
 import br.com.lifestories.model.entity.Lingua;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,11 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class LinguaDAO implements BaseDAO<Lingua>{
+public class LinguaDAO implements BaseDAO<Lingua> {
 
     @Override
     public void create(Connection conn, Lingua entity) throws Exception {
-    String sql = "INSERT INTO lingua(lin_nome) VALUES (?)RETURNING lin_id;";
+        String sql = "INSERT INTO lingua(lin_nome) VALUES (?)RETURNING lin_id;";
         PreparedStatement ps = conn.prepareStatement(sql);
         int i = 0;
         ps.setString(++i, entity.getNome());
@@ -54,7 +55,7 @@ public class LinguaDAO implements BaseDAO<Lingua>{
     @Override
     public List<Lingua> readByCriteria(Connection conn, Map<Long, Object> criteria, Long limit, Long offset) throws Exception {
         List<Lingua> linguaList = new ArrayList<>();
-        String sql = "SELECT * FROM lingua WHERE 1=1;";
+        String sql = "SELECT * FROM lingua WHERE 1=1";
 
         sql += this.applyCriteria(criteria);
 
@@ -64,7 +65,7 @@ public class LinguaDAO implements BaseDAO<Lingua>{
         if (offset != null && offset >= 0) {
             sql += " offset " + offset;
         }
-        
+
         Statement ps = conn.createStatement();
         ResultSet rs = ps.executeQuery(sql);
 
@@ -74,19 +75,23 @@ public class LinguaDAO implements BaseDAO<Lingua>{
             entity = new Lingua();
             entity.setId(rs.getLong("lin_id"));
             entity.setNome(rs.getString("lin_nome"));
-            
+
             linguaList.add(entity);
         }
 
         rs.close();
         ps.close();
-        
+
         return linguaList;
     }
 
     @Override
     public String applyCriteria(Map<Long, Object> criteria) throws Exception {
         String sql = " ";
+        String nomeLingua = (String) criteria.get(LinguaCriteria.NOME_LINGUA);
+        if (nomeLingua != null && !nomeLingua.isEmpty()) {
+            sql += " AND lin_nome ILIKE '%" + nomeLingua + "%'";
+        }
 
         return sql;
     }
@@ -120,5 +125,4 @@ public class LinguaDAO implements BaseDAO<Lingua>{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    
 }
