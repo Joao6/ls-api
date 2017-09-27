@@ -62,7 +62,7 @@ public class LinguaController {
     
     
     @PostMapping
-    public ResponseEntity create(@RequestBody Lingua lingua){
+    public ResponseEntity create(@RequestBody Lingua lingua) throws Exception{
         try {                             
             linguaService.create(lingua);
             return ResponseEntity.ok(lingua);
@@ -72,7 +72,7 @@ public class LinguaController {
     }  
     
     @DeleteMapping(value = "/{idLingua}")
-    public ResponseEntity delete(@PathVariable Long idLingua){
+    public ResponseEntity delete(@PathVariable Long idLingua) throws Exception{
         try {
             linguaService.delete(idLingua);
             return ResponseEntity.ok("Língua excluída com sucesso.");
