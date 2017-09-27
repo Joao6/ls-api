@@ -71,10 +71,10 @@ public class LinguaController {
         }
     }  
     
-    @DeleteMapping(value = "/{idLingua}")
-    public ResponseEntity delete(@PathVariable Long idLingua) throws Exception{
+    @DeleteMapping
+    public ResponseEntity delete(@RequestBody Lingua lingua) throws Exception{
         try {
-            linguaService.delete(idLingua);
+            linguaService.delete(lingua.getId());
             return ResponseEntity.ok("Língua excluída com sucesso.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
