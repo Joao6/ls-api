@@ -117,12 +117,23 @@ public class LinguaDAO implements BaseDAO<Lingua> {
 
     @Override
     public void update(Connection conn, Lingua entity) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String sql = "UPDATE lingua SET lin_nome=? WHERE lin_id=?;";
+        PreparedStatement ps = conn.prepareStatement(sql);
+        int i = 0;
+        ps.setString(++i, entity.getNome());                
+        ps.setLong(++i, entity.getId());
+
+        ps.execute();
+        ps.close();
     }
 
     @Override
     public void delete(Connection conn, Long id) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String query = "DELETE FROM lingua WHERE lin_id=?;";
+        PreparedStatement ps = conn.prepareStatement(query);
+        ps.setLong(1, id);
+        ps.execute();
+        ps.close();
     }
 
 }
