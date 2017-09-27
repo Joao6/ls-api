@@ -142,7 +142,8 @@ public class UsuarioController {
                 for (InstituicaoLongaPermanencia ins : insList) {
                     if (ins.getEmail().equals(identificador) && ins.getSenha().equals(senha)) {
                         if (ins.getTipo().equals("ains")) {
-                            return ResponseEntity.status(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS).body("Esta instituição ainda não foi aprovada por um administrador.");
+                            return ResponseEntity.ok("Esta instituição ainda não foi aprovada por um administrador. Aguarde até que isso aconteça!");
+                            //return ResponseEntity.status(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS).body("Esta instituição ainda não foi aprovada por um administrador.");
                         } else {
                             return ResponseEntity.ok(ins);
                         }
