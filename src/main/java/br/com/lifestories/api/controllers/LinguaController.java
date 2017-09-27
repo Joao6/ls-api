@@ -1,5 +1,6 @@
 package br.com.lifestories.api.controllers;
 
+import br.com.lifestories.api.constraints.DefaultConstraints;
 import br.com.lifestories.api.utils.PaginaDTO;
 import br.com.lifestories.model.criteria.LinguaCriteria;
 import br.com.lifestories.model.entity.Lingua;
@@ -21,18 +22,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "/linguas")
 public class LinguaController {
-    
+
     LinguaService linguaService = new LinguaService();
-    
+
     @GetMapping
     public ResponseEntity readByCriteria(@RequestParam(value = "limit", required = false) Long limit,
             @RequestParam(value = "offset", required = false) Long offset,
             @RequestParam(value = "nome", required = false) String nome
-    ) throws Exception{
+    ) throws Exception {
         try {
-            Map<Long, Object> criteria = new HashMap<>();          
-            if(nome != null && !nome.isEmpty()){
-            criteria.put(LinguaCriteria.NOME_LINGUA, nome);                
+            Map<Long, Object> criteria = new HashMap<>();
+            if (nome != null && !nome.isEmpty()) {
+                criteria.put(LinguaCriteria.NOME_LINGUA, nome);
+            }
+            if(limit == null || limit < 0){
+                limit = DefaultConstraints.LIMIT_DEFAULT;
             }
             Long count = linguaService.countByCriteria(criteria);
             PaginaDTO<Lingua> linguaPagina = new PaginaDTO<>(linguaService.readByCriteria(criteria, limit, offset), count);
@@ -41,9 +45,9 @@ public class LinguaController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-    
+
     @GetMapping(value = "/{id}")
-    public ResponseEntity readById(@PathVariable Long id) throws Exception{
+    public ResponseEntity readById(@PathVariable Long id) throws Exception {
         try {
             return ResponseEntity.ok(linguaService.readById(id));
         } catch (Exception e) {
