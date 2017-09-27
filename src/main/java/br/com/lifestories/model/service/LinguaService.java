@@ -94,7 +94,7 @@ public class LinguaService implements BaseLinguaService{
     @Override
     public void delete(Long id) throws Exception {
         Connection conn = ConnectionManager.getInstance().getConnection();
-        try {;
+        try {
             dao.delete(conn, id);
             conn.commit();
             conn.close();
