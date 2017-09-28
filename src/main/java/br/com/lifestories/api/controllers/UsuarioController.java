@@ -51,6 +51,33 @@ public class UsuarioController {
         }
     }
 
+    @GetMapping
+    public ResponseEntity readByCriteria(@RequestParam(value = "email", required = false) String email,
+            @RequestParam(value = "tipoUsuario", required = false) String tipoUsuario) {
+        try {
+            Map<Long, Object> criteria = new HashMap<>();
+            if (tipoUsuario != null && !tipoUsuario.isEmpty()) {
+                if (tipoUsuario.equals("ins")) {
+                    criteria.put(UsuarioCriteria.INS_TYPE, true);
+                    if (email != null && !email.isEmpty()) {
+                        criteria.put(UsuarioCriteria.INSTITUICAO_EMAIL, email);
+                    }
+                    
+                    return ResponseEntity.ok(insService.readByCriteria(criteria, null, null));
+                } else if (tipoUsuario.equals("est")) {
+                    criteria.put(UsuarioCriteria.EST_TYPE, true);
+                    if (email != null && !email.isEmpty()) {
+                        criteria.put(UsuarioCriteria.ESTUDANTE_EMAIL, email);
+                    }
+                    return ResponseEntity.ok(estService.readByCriteria(criteria, null, null));
+                }
+            }
+            return ResponseEntity.ok(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
     @GetMapping(value = "/validar")
     public ResponseEntity validarUsuario(@RequestParam(value = "hashUsuario", required = true) String hashUsuario) throws Exception {
         try {

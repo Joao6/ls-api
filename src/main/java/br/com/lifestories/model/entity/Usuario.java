@@ -1,11 +1,20 @@
 package br.com.lifestories.model.entity;
 
 import br.com.lifestories.model.base.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 /**
  *
  * @author Marcelo
  */
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "tipo")
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = Estudante.class, name = "est"),
+    @JsonSubTypes.Type(value = Administrador.class, name = "adm"),
+    @JsonSubTypes.Type(value = Idoso.class, name = "ido"),
+    @JsonSubTypes.Type(value = InstituicaoLongaPermanencia.class, name = "ins")
+})
 public abstract class Usuario extends BaseEntity{
     
     private String nome;

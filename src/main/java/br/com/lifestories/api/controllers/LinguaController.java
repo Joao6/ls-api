@@ -3,7 +3,6 @@ package br.com.lifestories.api.controllers;
 import br.com.lifestories.api.constraints.DefaultConstraints;
 import br.com.lifestories.api.utils.PaginaDTO;
 import br.com.lifestories.model.criteria.LinguaCriteria;
-import br.com.lifestories.model.entity.Idoso;
 import br.com.lifestories.model.entity.Lingua;
 import br.com.lifestories.model.service.LinguaService;
 import java.util.HashMap;
