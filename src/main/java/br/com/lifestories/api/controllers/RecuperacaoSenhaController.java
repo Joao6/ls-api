@@ -56,6 +56,7 @@ public class RecuperacaoSenhaController {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Não foi encontrado nenhum estudante com este email!");
                 }
             }
+            recuperacaoSenha.setHash(recuperacaoSenhaMock.getHash());
             recuperacaoSenhaService.create(recuperacaoSenha);
             return ResponseEntity.ok(recuperacaoSenha);
         } catch (Exception e) {
