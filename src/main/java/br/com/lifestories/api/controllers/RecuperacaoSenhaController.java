@@ -1,7 +1,16 @@
 package br.com.lifestories.api.controllers;
 
+import br.com.lifestories.api.mock.RecuperacaoSenhaMock;
+import br.com.lifestories.model.criteria.UsuarioCriteria;
+import br.com.lifestories.model.entity.Estudante;
+import br.com.lifestories.model.entity.InstituicaoLongaPermanencia;
 import br.com.lifestories.model.entity.RecuperacaoSenha;
+import br.com.lifestories.model.service.EstudanteService;
+import br.com.lifestories.model.service.InstituicaoLongaPermanenciaService;
 import br.com.lifestories.model.service.RecuperacaoSenhaService;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,10 +31,31 @@ import org.springframework.web.bind.annotation.RestController;
 public class RecuperacaoSenhaController {
 
     RecuperacaoSenhaService recuperacaoSenhaService = new RecuperacaoSenhaService();
+    InstituicaoLongaPermanenciaService insService = new InstituicaoLongaPermanenciaService();
+    EstudanteService estService = new EstudanteService();
 
     @PostMapping
-    public ResponseEntity create(@RequestBody RecuperacaoSenha recuperacaoSenha) {
+    public ResponseEntity create(@RequestBody RecuperacaoSenhaMock recuperacaoSenhaMock) {
         try {
+            Map<Long, Object> criteria = new HashMap<>();
+            RecuperacaoSenha recuperacaoSenha = new RecuperacaoSenha();
+            if (recuperacaoSenhaMock.getTipoUsuario().equals("ins")) {
+                criteria.put(UsuarioCriteria.INS_TYPE, true);
+                List<InstituicaoLongaPermanencia> instituicaoList = insService.readByCriteria(criteria, null, null);
+                if (instituicaoList != null && instituicaoList.size() > 0) {
+                    recuperacaoSenha.setUsuario(instituicaoList.get(0));
+                }else{
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Não foi encontrada nenhuma instituição com este email!");
+                }
+            } else if (recuperacaoSenhaMock.getTipoUsuario().equals("est")) {
+                criteria.put(UsuarioCriteria.EST_TYPE, true);
+                List<Estudante> estudanteList = estService.readByCriteria(criteria, null, null);
+                if (estudanteList != null && estudanteList.size() > 0) {
+                    recuperacaoSenha.setUsuario(estudanteList.get(0));
+                }else{
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Não foi encontrado nenhum estudante com este email!");
+                }
+            }
             recuperacaoSenhaService.create(recuperacaoSenha);
             return ResponseEntity.ok(recuperacaoSenha);
         } catch (Exception e) {
@@ -52,10 +82,10 @@ public class RecuperacaoSenhaController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-    
+
     @GetMapping(value = "/{hash}")
     public ResponseEntity readByHashCode(@PathVariable String hash) {
-        try {            
+        try {
             return ResponseEntity.ok(recuperacaoSenhaService.readByHashCode(hash));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
