@@ -57,6 +57,7 @@ public class RecuperacaoSenhaController {
                 }
             }
             recuperacaoSenha.setHash(recuperacaoSenhaMock.getHash());
+            recuperacaoSenha.setAtivo(Boolean.TRUE);
             recuperacaoSenhaService.create(recuperacaoSenha);
             return ResponseEntity.ok(recuperacaoSenha);
         } catch (Exception e) {
