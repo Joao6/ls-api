@@ -41,6 +41,7 @@ public class RecuperacaoSenhaController {
             RecuperacaoSenha recuperacaoSenha = new RecuperacaoSenha();
             if (recuperacaoSenhaMock.getTipoUsuario().equals("ins")) {
                 criteria.put(UsuarioCriteria.INS_TYPE, true);
+                criteria.put(UsuarioCriteria.INSTITUICAO_EMAIL, recuperacaoSenhaMock.getEmail());
                 List<InstituicaoLongaPermanencia> instituicaoList = insService.readByCriteria(criteria, null, null);
                 if (instituicaoList != null && instituicaoList.size() > 0) {
                     recuperacaoSenha.setUsuario(instituicaoList.get(0));
@@ -49,6 +50,7 @@ public class RecuperacaoSenhaController {
                 }
             } else if (recuperacaoSenhaMock.getTipoUsuario().equals("est")) {
                 criteria.put(UsuarioCriteria.EST_TYPE, true);
+                criteria.put(UsuarioCriteria.ESTUDANTE_EMAIL, recuperacaoSenhaMock.getEmail());
                 List<Estudante> estudanteList = estService.readByCriteria(criteria, null, null);
                 if (estudanteList != null && estudanteList.size() > 0) {
                     recuperacaoSenha.setUsuario(estudanteList.get(0));
@@ -68,7 +70,7 @@ public class RecuperacaoSenhaController {
     @PutMapping
     public ResponseEntity update(@RequestBody RecuperacaoSenhaMock recuperacaoSenhaMock) {
         try {
-            RecuperacaoSenha recuperacaoSenha = recuperacaoSenhaService.readById(recuperacaoSenhaMock.getId());  
+            RecuperacaoSenha recuperacaoSenha = recuperacaoSenhaService.readById(recuperacaoSenhaMock.getId());
             recuperacaoSenha.setAtivo(recuperacaoSenhaMock.getAtivo());
             recuperacaoSenhaService.update(recuperacaoSenha);
             return ResponseEntity.ok(recuperacaoSenha);
