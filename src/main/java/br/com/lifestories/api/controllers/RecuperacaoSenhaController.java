@@ -44,7 +44,7 @@ public class RecuperacaoSenhaController {
                 List<InstituicaoLongaPermanencia> instituicaoList = insService.readByCriteria(criteria, null, null);
                 if (instituicaoList != null && instituicaoList.size() > 0) {
                     recuperacaoSenha.setUsuario(instituicaoList.get(0));
-                }else{
+                } else {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Não foi encontrada nenhuma instituição com este email!");
                 }
             } else if (recuperacaoSenhaMock.getTipoUsuario().equals("est")) {
@@ -52,7 +52,7 @@ public class RecuperacaoSenhaController {
                 List<Estudante> estudanteList = estService.readByCriteria(criteria, null, null);
                 if (estudanteList != null && estudanteList.size() > 0) {
                     recuperacaoSenha.setUsuario(estudanteList.get(0));
-                }else{
+                } else {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Não foi encontrado nenhum estudante com este email!");
                 }
             }
@@ -66,8 +66,10 @@ public class RecuperacaoSenhaController {
     }
 
     @PutMapping
-    public ResponseEntity update(@RequestBody RecuperacaoSenha recuperacaoSenha) {
+    public ResponseEntity update(@RequestBody RecuperacaoSenhaMock recuperacaoSenhaMock) {
         try {
+            RecuperacaoSenha recuperacaoSenha = recuperacaoSenhaService.readById(recuperacaoSenhaMock.getId());  
+            recuperacaoSenha.setAtivo(recuperacaoSenhaMock.getAtivo());
             recuperacaoSenhaService.update(recuperacaoSenha);
             return ResponseEntity.ok(recuperacaoSenha);
         } catch (Exception e) {
