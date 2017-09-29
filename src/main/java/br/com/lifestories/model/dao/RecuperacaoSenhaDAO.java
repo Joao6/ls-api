@@ -98,12 +98,11 @@ public class RecuperacaoSenhaDAO implements BaseDAO<RecuperacaoSenha> {
 
     @Override
     public void update(Connection conn, RecuperacaoSenha entity) throws Exception {
-        String sql = "UPDATE recuperacao_senha SET rec_hash=?, rec_usuario_fk=?, rec_ativo=? WHERE rec_id=?;";
+        String sql = "UPDATE recuperacao_senha SET rec_hash=?, rec_ativo=? WHERE rec_id=?;";
 
         PreparedStatement ps = conn.prepareStatement(sql);
         int i = 0;
         ps.setString(++i, entity.getHash());
-        ps.setLong(++i, entity.getUsuario().getId());
         ps.setBoolean(++i, entity.getAtivo());
         ps.setLong(++i, entity.getId());
 
