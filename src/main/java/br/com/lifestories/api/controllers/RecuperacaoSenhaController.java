@@ -44,7 +44,7 @@ public class RecuperacaoSenhaController {
                 criteria.put(UsuarioCriteria.INSTITUICAO_EMAIL, recuperacaoSenhaMock.getEmail());
                 List<InstituicaoLongaPermanencia> instituicaoList = insService.readByCriteria(criteria, null, null);
                 if (instituicaoList != null && instituicaoList.size() > 0) {
-                    recuperacaoSenha.setUsuario(instituicaoList.get(0));
+                    recuperacaoSenha.setUsuario(instituicaoList.get(0));                    
                 } else {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Não foi encontrada nenhuma instituição com este email!");
                 }
@@ -58,7 +58,7 @@ public class RecuperacaoSenhaController {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Não foi encontrado nenhum estudante com este email!");
                 }
             }
-            recuperacaoSenha.setHash(recuperacaoSenhaMock.getHash());
+            recuperacaoSenha.setHash(recuperacaoSenhaMock.getHash() + recuperacaoSenha.getUsuario().getId());
             recuperacaoSenha.setAtivo(Boolean.TRUE);
             recuperacaoSenhaService.create(recuperacaoSenha);
             return ResponseEntity.ok(recuperacaoSenha);
