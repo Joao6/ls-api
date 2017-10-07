@@ -32,8 +32,12 @@ public class ConversaDAO implements BaseDAO<Conversa> {
         PreparedStatement ps = conn.prepareStatement(sql);
         int i = 0;
         ps.setLong(++i, entity.getEstudante().getId());
-        if (entity.getIdoso() != null && entity.getIdoso().getId() != null) {
-            ps.setLong(++i, entity.getIdoso().getId());
+        if (entity.getIdoso() != null) {
+            if (entity.getIdoso().getId() > 0) {
+                ps.setLong(++i, entity.getIdoso().getId());
+            } else {
+                ps.setNull(++i, Types.BIGINT);
+            }
         } else {
             ps.setNull(++i, Types.BIGINT);
         }

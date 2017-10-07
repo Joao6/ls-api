@@ -4,6 +4,7 @@ import br.com.lifestories.api.mock.ConversaMock;
 import br.com.lifestories.api.utils.PaginaDTO;
 import br.com.lifestories.model.criteria.ConversaCriteria;
 import br.com.lifestories.model.entity.Conversa;
+import br.com.lifestories.model.entity.Idoso;
 import br.com.lifestories.model.service.ConversaService;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -70,7 +71,8 @@ public class ConversaController {
     @PostMapping
     public ResponseEntity createOrUpdate(@RequestBody ConversaMock conversa) {
         try {
-
+            Idoso idoso = new Idoso();
+            idoso.setId(0L);
             Iterator<ConversaMock> elements = conversaMap.keySet().iterator();
             boolean encontrei = false;
             if (elements.hasNext()) {
@@ -91,6 +93,7 @@ public class ConversaController {
                             conversaMap.remove(conversaIt);
                         } else {
                             //criar conversa
+                            conversaBD.setIdoso(idoso);
                             conversaBD.setEstudanteAvaliacao(conversa.getEstudanteAvaliacao());
                             conversaService.create(conversaBD);
                             conversaMap.put(conversaIt, conversaBD.getId());
@@ -129,7 +132,8 @@ public class ConversaController {
                 conversaBD.setEstudante(conversa.getEstudante());                
                 conversaMock.setEstudante(conversa.getEstudante());                
                 if (conversa.getUsuarioTransmissor().equals("estudante")) {
-                    //criar conversa                                    
+                    //criar conversa          
+                    conversaBD.setIdoso(idoso);
                     conversaBD.setEstudanteAvaliacao(conversa.getEstudanteAvaliacao());
                     conversaMock.setEstudanteAvaliacao(conversa.getEstudanteAvaliacao());
                     conversaService.create(conversaBD);
