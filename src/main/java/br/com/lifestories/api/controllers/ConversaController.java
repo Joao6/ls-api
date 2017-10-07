@@ -4,7 +4,6 @@ import br.com.lifestories.api.mock.ConversaMock;
 import br.com.lifestories.api.utils.PaginaDTO;
 import br.com.lifestories.model.criteria.ConversaCriteria;
 import br.com.lifestories.model.entity.Conversa;
-import br.com.lifestories.model.entity.Idoso;
 import br.com.lifestories.model.service.ConversaService;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -71,15 +70,15 @@ public class ConversaController {
     @PostMapping
     public ResponseEntity createOrUpdate(@RequestBody ConversaMock conversa) {
         try {
-            Idoso idoso = new Idoso();
-            idoso.setId(0L);
+
             Iterator<ConversaMock> elements = conversaMap.keySet().iterator();
             boolean encontrei = false;
             if (elements.hasNext()) {
                 while (elements.hasNext()) {
                     ConversaMock conversaIt = elements.next();
                     Conversa conversaBD = new Conversa();
-                    conversaBD.setEstudante(conversa.getEstudante());                    
+                    conversaBD.setEstudante(conversa.getEstudante());
+                    conversaBD.setIdoso(conversa.getIdoso());
                     if (conversa.getUsuarioTransmissor().equals("estudante")
                             && conversaIt.getEstudante().getId() == conversa.getEstudante().getId()) {
                         //estudante
@@ -93,7 +92,6 @@ public class ConversaController {
                             conversaMap.remove(conversaIt);
                         } else {
                             //criar conversa
-                            conversaBD.setIdoso(idoso);
                             conversaBD.setEstudanteAvaliacao(conversa.getEstudanteAvaliacao());
                             conversaService.create(conversaBD);
                             conversaMap.put(conversaIt, conversaBD.getId());
@@ -114,8 +112,7 @@ public class ConversaController {
                             conversaService.update(conversaUpdate);
                             conversaMap.remove(conversaIt);
                         } else {
-                            //criar conversa
-                            conversaBD.setIdoso(conversa.getIdoso());
+                            //criar conversa                            
                             conversaBD.setIdosoAvaliacao(conversa.getIdosoAvaliacao());
                             conversaBD.setDataHoraInicio(conversa.getDataHoraInicio());
                             conversaBD.setDatahoraFim(conversa.getDatahoraFim());
@@ -129,18 +126,17 @@ public class ConversaController {
             if (!encontrei) {
                 ConversaMock conversaMock = new ConversaMock();
                 Conversa conversaBD = new Conversa();
-                conversaBD.setEstudante(conversa.getEstudante());                
-                conversaMock.setEstudante(conversa.getEstudante());                
+                conversaBD.setEstudante(conversa.getEstudante());
+                conversaMock.setEstudante(conversa.getEstudante());
+                conversaBD.setIdoso(conversa.getIdoso());
+                conversaMock.setIdoso(conversa.getIdoso());
                 if (conversa.getUsuarioTransmissor().equals("estudante")) {
-                    //criar conversa          
-                    conversaBD.setIdoso(idoso);
+                    //criar conversa                                    
                     conversaBD.setEstudanteAvaliacao(conversa.getEstudanteAvaliacao());
                     conversaMock.setEstudanteAvaliacao(conversa.getEstudanteAvaliacao());
                     conversaService.create(conversaBD);
                     conversaMap.put(conversaMock, conversaBD.getId());
                 } else if (conversa.getUsuarioTransmissor().equals("idoso")) {
-                    conversaBD.setIdoso(conversa.getIdoso());
-                    conversaMock.setIdoso(conversa.getIdoso());
                     conversaBD.setIdosoAvaliacao(conversa.getIdosoAvaliacao());
                     conversaBD.setDataHoraInicio(conversa.getDataHoraInicio());
                     conversaBD.setDatahoraFim(conversa.getDatahoraFim());
