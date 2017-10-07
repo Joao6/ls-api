@@ -211,12 +211,12 @@ public class ConversaDAO implements BaseDAO<Conversa> {
 
         String nomeIdoso = (String) criteria.get(ConversaCriteria.NOME_IDOSO);
         if (nomeIdoso != null && !nomeIdoso.isEmpty()) {
-            sql += " and ido_nome = '" + nomeIdoso + "'";
+            sql += " and ido_nome ILIKE '%" + nomeIdoso + "%'";
         }
 
         String nomeEstudante = (String) criteria.get(ConversaCriteria.NOME_ESTUDANTE);
         if (nomeEstudante != null && !nomeEstudante.isEmpty()) {
-            sql += " and est_nome = '" + nomeEstudante + "'";
+            sql += " and est_nome ILIKE '%" + nomeEstudante + "%'";
         }
 
         return sql;
