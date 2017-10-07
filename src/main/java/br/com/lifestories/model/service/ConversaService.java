@@ -27,6 +27,7 @@ public class ConversaService implements BaseConversaService {
         } catch (Exception e) {
             conn.rollback();
             conn.close();
+            throw e;
         }
     }
 
@@ -95,6 +96,7 @@ public class ConversaService implements BaseConversaService {
         } catch (Exception e) {
             conn.rollback();
             conn.close();
+            throw e;
         }
     }
 

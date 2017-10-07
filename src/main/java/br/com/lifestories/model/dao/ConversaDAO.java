@@ -6,6 +6,7 @@
 package br.com.lifestories.model.dao;
 
 import br.com.lifestories.model.base.BaseDAO;
+import br.com.lifestories.model.criteria.ConversaCriteria;
 import br.com.lifestories.model.entity.Conversa;
 import br.com.lifestories.model.entity.Vinculo;
 import java.sql.Connection;
@@ -31,12 +32,36 @@ public class ConversaDAO implements BaseDAO<Conversa> {
         PreparedStatement ps = conn.prepareStatement(sql);
         int i = 0;
         ps.setLong(++i, entity.getEstudante().getId());
-        ps.setLong(++i, entity.getIdoso().getId());
-        ps.setInt(++i, entity.getEstudanteAvaliacao());
-        ps.setInt(++i, entity.getIdosoAvaliacao());
-        ps.setTimestamp(++i, entity.getDataHoraInicio());
-        ps.setTimestamp(++i, entity.getDatahoraFim());
-        ps.setFloat(++i, entity.getDuracao());
+        if (entity.getIdoso() != null) {
+            ps.setLong(++i, entity.getIdoso().getId());
+        } else {
+            ps.setNull(++i, Types.BIGINT);
+        }
+        if (entity.getEstudanteAvaliacao() != null) {
+            ps.setInt(++i, entity.getEstudanteAvaliacao());
+        } else {
+            ps.setNull(++i, Types.INTEGER);
+        }
+        if (entity.getIdosoAvaliacao() != null) {
+            ps.setInt(++i, entity.getIdosoAvaliacao());
+        } else {
+            ps.setNull(++i, Types.INTEGER);
+        }
+        if (entity.getDataHoraInicio() != null) {
+            ps.setTimestamp(++i, entity.getDataHoraInicio());
+        } else {
+            ps.setNull(++i, Types.TIMESTAMP);
+        }
+        if (entity.getDatahoraFim() != null) {
+            ps.setTimestamp(++i, entity.getDatahoraFim());
+        } else {
+            ps.setNull(++i, Types.TIMESTAMP);
+        }
+        if (entity.getDuracao() != null) {
+            ps.setFloat(++i, entity.getDuracao());
+        } else {
+            ps.setNull(++i, Types.FLOAT);
+        }
         if (entity.getGravacao().getAudio() != null && entity.getGravacao().getAudio().longValue() != 0) {
             ps.setLong(++i, entity.getGravacao().getId());
         } else {
@@ -47,22 +72,22 @@ public class ConversaDAO implements BaseDAO<Conversa> {
         if (rs.next()) {
             entity.setId(rs.getLong("conve_id"));
         }
-        
+
         sql = "SELECT count(*) count FROM vinculo WHERE vin_idoso_fk=? AND vin_estudante_fk=?;";
         ps = conn.prepareStatement(sql);
         i = 0;
         ps.setLong(++i, entity.getIdoso().getId());
         ps.setLong(++i, entity.getEstudante().getId());
-        
+
         rs = ps.executeQuery();
         Long count = 0L;
         if (rs.next()) {
             count = rs.getLong("count");
-        }  
+        }
         rs.close();
         ps.close();
-        
-        if(count.equals(0L)){
+
+        if (count.equals(0L)) {
             VinculoDAO dao = new VinculoDAO();
             Vinculo vinculo = new Vinculo();
             vinculo.setId(entity.getId());
@@ -157,7 +182,7 @@ public class ConversaDAO implements BaseDAO<Conversa> {
 
             conversaList.add(entity);
         }
-        
+
         rs.close();
         s.close();
         return conversaList;
@@ -167,19 +192,46 @@ public class ConversaDAO implements BaseDAO<Conversa> {
     public String applyCriteria(Map<Long, Object> criteria) throws Exception {
         String sql = " ";
 
+        Long idIdoso = (Long) criteria.get(ConversaCriteria.ID_IDOSO);
+        if (idIdoso != null && idIdoso > 0) {
+            sql += " and ido_usuario_fk = " + idIdoso;
+        }
+        Long idEstudante = (Long) criteria.get(ConversaCriteria.ID_ESTUDANTE);
+        if (idEstudante != null && idEstudante > 0) {
+            sql += " and est_usuario_fk = " + idEstudante;
+        }
+        Long idInstituicao = (Long) criteria.get(ConversaCriteria.ID_INSTITUICAO);
+        if (idInstituicao != null && idInstituicao > 0) {
+            sql += " and ido_instituicao_longa_permanencia_fk = " + idInstituicao;
+        }
+
+        String nomeIdoso = (String) criteria.get(ConversaCriteria.NOME_IDOSO);
+        if (nomeIdoso != null && !nomeIdoso.isEmpty()) {
+            sql += " and ido_nome = '" + nomeIdoso + "'";
+        }
+
+        String nomeEstudante = (String) criteria.get(ConversaCriteria.NOME_ESTUDANTE);
+        if (nomeEstudante != null && !nomeEstudante.isEmpty()) {
+            sql += " and est_nome = '" + nomeEstudante + "'";
+        }
+
         return sql;
     }
 
     @Override
     public Long countByCriteria(Connection conn, Map<Long, Object> criteria) throws Exception {
-        String sql = "SELECT COUNT(*) count FROM conversa WHERE 1=1 ";
+        String sql = "SELECT COUNT(*) count FROM conversa \n"
+                + "                LEFT JOIN idoso ON conve_idoso_fk=ido_usuario_fk \n"
+                + "                LEFT JOIN usuario i ON i.usu_id=ido_usuario_fk \n"
+                + "                LEFT JOIN estudante ON conve_estudante_fk=est_usuario_fk \n"
+                + "                LEFT JOIN usuario e ON e.usu_id=est_usuario_fk WHERE 1=1 ";
         sql += this.applyCriteria(criteria);
 
         Statement s = conn.createStatement();
         ResultSet rs = s.executeQuery(sql);
 
         Long count = null;
-        if(rs.next()) {
+        if (rs.next()) {
             count = rs.getLong("count");
         }
 
@@ -197,12 +249,36 @@ public class ConversaDAO implements BaseDAO<Conversa> {
         PreparedStatement ps = conn.prepareStatement(sql);
         int i = 0;
         ps.setLong(++i, entity.getEstudante().getId());
-        ps.setLong(++i, entity.getIdoso().getId());
-        ps.setInt(++i, entity.getEstudanteAvaliacao());
-        ps.setInt(++i, entity.getIdosoAvaliacao());
-        ps.setTimestamp(++i, entity.getDataHoraInicio());
-        ps.setTimestamp(++i, entity.getDatahoraFim());
-        ps.setFloat(++i, entity.getDuracao());
+        if (entity.getIdoso() != null) {
+            ps.setLong(++i, entity.getIdoso().getId());
+        } else {
+            ps.setNull(++i, Types.BIGINT);
+        }
+        if (entity.getEstudanteAvaliacao() != null) {
+            ps.setInt(++i, entity.getEstudanteAvaliacao());
+        } else {
+            ps.setNull(++i, Types.INTEGER);
+        }
+        if (entity.getIdosoAvaliacao() != null) {
+            ps.setInt(++i, entity.getIdosoAvaliacao());
+        } else {
+            ps.setNull(++i, Types.INTEGER);
+        }
+        if (entity.getDataHoraInicio() != null) {
+            ps.setTimestamp(++i, entity.getDataHoraInicio());
+        } else {
+            ps.setNull(++i, Types.TIMESTAMP);
+        }
+        if (entity.getDatahoraFim() != null) {
+            ps.setTimestamp(++i, entity.getDatahoraFim());
+        } else {
+            ps.setNull(++i, Types.TIMESTAMP);
+        }
+        if (entity.getDuracao() != null) {
+            ps.setFloat(++i, entity.getDuracao());
+        } else {
+            ps.setNull(++i, Types.FLOAT);
+        }
         if (entity.getGravacao().getAudio() != null && entity.getGravacao().getAudio().longValue() != 0) {
             ps.setLong(++i, entity.getGravacao().getId());
         } else {
