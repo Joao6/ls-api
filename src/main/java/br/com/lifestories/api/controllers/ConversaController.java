@@ -105,11 +105,17 @@ public class ConversaController {
                             //atualizar conversa
                             Conversa conversaUpdate = conversaService.readById(idConversa);
                             conversaUpdate.setIdosoAvaliacao(conversa.getIdosoAvaliacao());
+                            conversaUpdate.setDataHoraInicio(conversa.getDataHoraInicio());
+                            conversaUpdate.setDatahoraFim(conversa.getDatahoraFim());
+                            conversaUpdate.setDuracao(conversa.getDuracao());
                             conversaService.update(conversaUpdate);
                             conversaMap.remove(conversaIt);
                         } else {
                             //criar conversa
                             conversaBD.setIdosoAvaliacao(conversa.getIdosoAvaliacao());
+                            conversaBD.setDataHoraInicio(conversa.getDataHoraInicio());
+                            conversaBD.setDatahoraFim(conversa.getDatahoraFim());
+                            conversaBD.setDuracao(conversa.getDuracao());
                             conversaService.create(conversaBD);
                             conversaMap.put(conversaIt, conversaBD.getId());
                         }
@@ -131,6 +137,9 @@ public class ConversaController {
                     conversaMap.put(conversaMock, conversaBD.getId());
                 } else if (conversa.getUsuarioTransmissor().equals("idoso")) {
                     conversaBD.setIdosoAvaliacao(conversa.getIdosoAvaliacao());
+                    conversaBD.setDataHoraInicio(conversa.getDataHoraInicio());
+                    conversaBD.setDatahoraFim(conversa.getDatahoraFim());
+                    conversaBD.setDuracao(conversa.getDuracao());
                     conversaMock.setIdosoAvaliacao(conversa.getIdosoAvaliacao());
                     conversaService.create(conversaBD);
                     conversaMap.put(conversaMock, conversaBD.getId());

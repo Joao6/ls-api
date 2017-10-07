@@ -2,6 +2,7 @@ package br.com.lifestories.api.mock;
 
 import br.com.lifestories.model.entity.Estudante;
 import br.com.lifestories.model.entity.Idoso;
+import java.sql.Timestamp;
 
 /**
  *
@@ -14,7 +15,34 @@ public class ConversaMock {
     private Estudante estudante;
     private Integer estudanteAvaliacao;
     private Integer idosoAvaliacao;
+    private Float duracao;
+    private Timestamp dataHoraInicio;
+    private Timestamp datahoraFim;
     private String usuarioTransmissor;
+
+    public Float getDuracao() {
+        return duracao;
+    }
+
+    public void setDuracao(Float duracao) {
+        this.duracao = duracao;
+    }
+
+    public Timestamp getDataHoraInicio() {
+        return dataHoraInicio;
+    }
+
+    public void setDataHoraInicio(Timestamp dataHoraInicio) {
+        this.dataHoraInicio = dataHoraInicio;
+    }
+
+    public Timestamp getDatahoraFim() {
+        return datahoraFim;
+    }
+
+    public void setDatahoraFim(Timestamp datahoraFim) {
+        this.datahoraFim = datahoraFim;
+    }
 
     public String getUsuarioTransmissor() {
         return usuarioTransmissor;
