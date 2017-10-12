@@ -1,6 +1,7 @@
 package br.com.lifestories.model.dao;
 
 import br.com.lifestories.model.base.BaseDAO;
+import br.com.lifestories.model.criteria.VinculoCriteria;
 import br.com.lifestories.model.entity.Vinculo;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,7 +21,7 @@ public class VinculoDAO implements BaseDAO<Vinculo> {
         ps.setLong(++i, entity.getId());
         ps.setLong(++i, entity.getEstudante().getId());
         ps.setLong(++i, entity.getIdoso().getId());
-        
+
         ps.execute();
         ps.close();
     }
@@ -107,12 +108,25 @@ public class VinculoDAO implements BaseDAO<Vinculo> {
     public String applyCriteria(Map<Long, Object> criteria) throws Exception {
         String sql = " ";
 
+        Long idIdoso = (Long) criteria.get(VinculoCriteria.ID_IDOSO);
+        if (idIdoso != null && idIdoso > 0) {
+            sql += " and ido_usuario_fk = " + idIdoso;
+        }
+        Long idEstudante = (Long) criteria.get(VinculoCriteria.ID_ESTUDANTE);
+        if (idEstudante != null && idEstudante > 0) {
+            sql += " and est_usuario_fk = " + idEstudante;
+        }
+
         return sql;
     }
 
     @Override
     public Long countByCriteria(Connection conn, Map<Long, Object> criteria) throws Exception {
-        String sql = "SELECT COUNT(*) count FROM vinculo WHERE 1=1 ";
+        String sql = "SELECT COUNT(*) count\n"
+                + "FROM vinculo LEFT JOIN estudante ON est_usuario_fk=vin_estudante_fk \n"
+                + "LEFT JOIN usuario e ON e.usu_id=vin_estudante_fk \n"
+                + "LEFT JOIN idoso ON ido_usuario_fk=vin_idoso_fk \n"
+                + "LEFT JOIN usuario i ON vin_idoso_fk=i.usu_id WHERE 1=1 ";
         sql += this.applyCriteria(criteria);
 
         Statement s = conn.createStatement();
