@@ -49,6 +49,24 @@ public class LinguaController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+    
+    @GetMapping(value = "/all")
+    public ResponseEntity readByCriteriaAll(@RequestParam(value = "limit", required = false) Long limit,
+            @RequestParam(value = "offset", required = false) Long offset,
+            @RequestParam(value = "nome", required = false) String nome
+    ) throws Exception {
+        try {
+            Map<Long, Object> criteria = new HashMap<>();
+            if (nome != null && !nome.isEmpty()) {
+                criteria.put(LinguaCriteria.NOME_LINGUA, nome);
+            }
+            Long count = linguaService.countByCriteria(criteria);
+            PaginaDTO<Lingua> linguaPagina = new PaginaDTO<>(linguaService.readByCriteria(criteria, limit, offset), count);
+            return ResponseEntity.ok(linguaPagina);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
 
     @GetMapping(value = "/{id}")
     public ResponseEntity readById(@PathVariable Long id) throws Exception {
