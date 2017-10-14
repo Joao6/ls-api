@@ -134,6 +134,18 @@ public class DenunciaDAO implements BaseDAO<Denuncia> {
         if (idEstudante != null && idEstudante > 0) {
             sql += " and est_usuario_fk = " + idEstudante;
         }
+        String nomeEstudante = (String) criteria.get(DenunciaCriteria.NOME_ESTUDANTE);
+        if (nomeEstudante != null && !nomeEstudante.isEmpty()) {
+            sql += " and e.usu_nome ILIKE '%" + nomeEstudante + "%'";
+        }
+        String nomeIdoso = (String) criteria.get(DenunciaCriteria.NOME_IDOSO);
+        if (nomeIdoso != null && !nomeIdoso.isEmpty()) {
+            sql += " and i.usu_nome ILIKE '%" + nomeIdoso + "%'";
+        }
+        String tipo = (String) criteria.get(DenunciaCriteria.TIPO);
+        if (tipo != null && !tipo.isEmpty()) {
+            sql += " and den_tipo = '" + tipo +"'";
+        }
 
         return sql;
     }

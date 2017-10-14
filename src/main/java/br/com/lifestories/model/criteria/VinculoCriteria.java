@@ -7,6 +7,6 @@ package br.com.lifestories.model.criteria;
 public class VinculoCriteria {
     
     public static Long ID_IDOSO = 1L;
-    public static Long ID_ESTUDANTE = 2L;
+    public static Long ID_ESTUDANTE = 2L;    
     
 }

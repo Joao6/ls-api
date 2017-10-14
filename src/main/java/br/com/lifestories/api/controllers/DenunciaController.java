@@ -1,12 +1,14 @@
 package br.com.lifestories.api.controllers;
 
+import br.com.lifestories.api.constraints.DefaultConstraints;
 import br.com.lifestories.api.utils.PaginaDTO;
+import br.com.lifestories.model.criteria.DenunciaCriteria;
 import br.com.lifestories.model.criteria.VinculoCriteria;
 import br.com.lifestories.model.entity.Denuncia;
-import br.com.lifestories.model.entity.Vinculo;
 import br.com.lifestories.model.service.DenunciaService;
 import java.util.HashMap;
 import java.util.Map;
+import org.hibernate.validator.internal.cfg.context.DefaultConstraintMapping;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,6 +43,9 @@ public class DenunciaController {
     public ResponseEntity readByCriteria(
             @RequestParam(value = "idIdoso", required = false) Long idIdoso,
             @RequestParam(value = "idEstudante", required = false) Long idEstudante,
+            @RequestParam(value = "nomeEstudante", required = false) String nomeEstudante,
+            @RequestParam(value = "nomeIdoso", required = false) String nomeIdoso,
+            @RequestParam(value = "tipo", required = false) String tipo,
             @RequestParam(value = "limit", required = false) Long limit,
             @RequestParam(value = "offset", required = false) Long offset) {
         try {
@@ -48,12 +53,23 @@ public class DenunciaController {
             Map<Long, Object> criteria = new HashMap<>();
             
             if(idIdoso != null && idIdoso > 0){
-                criteria.put(VinculoCriteria.ID_IDOSO, idIdoso);
+                criteria.put(DenunciaCriteria.ID_IDOSO, idIdoso);
             }
             if(idEstudante != null && idEstudante > 0){
-                criteria.put(VinculoCriteria.ID_ESTUDANTE, idEstudante);
+                criteria.put(DenunciaCriteria.ID_ESTUDANTE, idEstudante);
             }
-            
+            if(nomeEstudante != null && !nomeEstudante.isEmpty()){
+                criteria.put(DenunciaCriteria.NOME_ESTUDANTE, nomeEstudante);
+            }
+            if(nomeIdoso != null && !nomeIdoso.isEmpty()){
+                criteria.put(DenunciaCriteria.NOME_IDOSO, nomeIdoso);
+            }
+            if(tipo != null && !tipo.isEmpty()){
+                criteria.put(DenunciaCriteria.TIPO, tipo);
+            }
+            if(limit == null || limit < 0){
+                limit = DefaultConstraints.LIMIT_DEFAULT;
+            }
             Long count = denunciaService.countByCriteria(criteria);
             PaginaDTO<Denuncia> paginaDenuncia = new PaginaDTO<>(denunciaService.readByCriteria(criteria, limit, offset), count);
             return ResponseEntity.ok(paginaDenuncia);
