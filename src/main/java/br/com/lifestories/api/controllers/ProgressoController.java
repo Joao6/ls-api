@@ -1,9 +1,11 @@
 package br.com.lifestories.api.controllers;
 
 import br.com.lifestories.model.criteria.ConversaCriteria;
+import br.com.lifestories.model.criteria.DenunciaCriteria;
 import br.com.lifestories.model.criteria.VinculoCriteria;
 import br.com.lifestories.model.entity.Conversa;
 import br.com.lifestories.model.service.ConversaService;
+import br.com.lifestories.model.service.DenunciaService;
 import br.com.lifestories.model.service.VinculoService;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +27,7 @@ public class ProgressoController {
 
     ConversaService conversaService = new ConversaService();
     VinculoService vinculoService = new VinculoService();
+    DenunciaService denunciaService = new DenunciaService();
 
     @GetMapping(value = "/conversas")
     public ResponseEntity conversasById(
@@ -52,6 +55,23 @@ public class ProgressoController {
                 criteria.put(VinculoCriteria.ID_ESTUDANTE, idEstudante);
             }
             Long count = vinculoService.countByCriteria(criteria);
+            return ResponseEntity.ok(count);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+    
+    @GetMapping(value = "/denuncias")
+    public ResponseEntity denunciasById(
+            @RequestParam(value = "idEstudante", required = false) Long idEstudante
+    ) throws Exception {
+        try {
+            Map<Long, Object> criteria = new HashMap<>();
+            if(idEstudante != null && idEstudante > 0){
+                criteria.put(DenunciaCriteria.ID_ESTUDANTE, idEstudante);
+            }
+            criteria.put(DenunciaCriteria.TIPO, "idoso");
+            Long count = denunciaService.countByCriteria(criteria);
             return ResponseEntity.ok(count);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
