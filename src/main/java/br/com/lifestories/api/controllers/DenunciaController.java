@@ -43,8 +43,9 @@ public class DenunciaController {
     public ResponseEntity readByCriteria(
             @RequestParam(value = "idIdoso", required = false) Long idIdoso,
             @RequestParam(value = "idEstudante", required = false) Long idEstudante,
+            @RequestParam(value = "idInstituicao", required = false) Long idInstituicao,
             @RequestParam(value = "nomeEstudante", required = false) String nomeEstudante,
-            @RequestParam(value = "nomeIdoso", required = false) String nomeIdoso,
+            @RequestParam(value = "nomeIdoso", required = false) String nomeIdoso,            
             @RequestParam(value = "tipo", required = false) String tipo,
             @RequestParam(value = "limit", required = false) Long limit,
             @RequestParam(value = "offset", required = false) Long offset) {
@@ -57,6 +58,9 @@ public class DenunciaController {
             }
             if(idEstudante != null && idEstudante > 0){
                 criteria.put(DenunciaCriteria.ID_ESTUDANTE, idEstudante);
+            }
+            if(idInstituicao != null && idInstituicao > 0){
+                criteria.put(DenunciaCriteria.ID_INSTITUICAO, idInstituicao);
             }
             if(nomeEstudante != null && !nomeEstudante.isEmpty()){
                 criteria.put(DenunciaCriteria.NOME_ESTUDANTE, nomeEstudante);
